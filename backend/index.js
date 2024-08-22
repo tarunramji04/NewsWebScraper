@@ -1,3 +1,3 @@
-import { scrapeCNN, scrapeFox } from "./helpers.js";
+import { scrape } from "./helpers.js";
 
-await Promise.all([scrapeFox(), scrapeCNN()]);
+await scrape();
