@@ -42,6 +42,7 @@ export async function uploadData(source, headline, link, img) {
         img: img
     };
     const day = new Date().toISOString().split('T')[0];
+    
     try {
         const collect = collection(firestoreDb, 'scrapedData', day, source);
         await addDoc(collect, data);

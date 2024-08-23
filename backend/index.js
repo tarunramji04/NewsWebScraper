@@ -1,8 +1,14 @@
 import puppeteer from 'puppeteer'
 import { scrapeFox, scrapeCNN } from './scraping.js'
 import { initializeFirebaseApp, uploadData } from './firebase.js'
+import functions from 'firebase-functions'
 
-export async function scrape() {
+const options = {
+    memory: '1GB',
+    timeoutSeconds: 400,
+};
+
+async function scrape() {
     let browser;
     try {
         browser = await puppeteer.launch();
@@ -26,4 +32,7 @@ export async function scrape() {
     }
 }
 
-await scrape();
+export const scheduledScrape = functions.runWith(options).pubsub.schedule('every 60 minutes').onRun(async () => {
+    console.log('Scheduled scrape function running...');
+    await scrape();
+});
