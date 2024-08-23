@@ -23,7 +23,7 @@ const firebaseConfig = {
 };
 
 let app;
-let firestoreDb;
+export let firestoreDb;
 
 export function initializeFirebaseApp() {
     try {

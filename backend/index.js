@@ -35,4 +35,4 @@ export const scheduledScrape = functions.runWith({memory: '1GB', timeoutSeconds:
     await scrape();
 });
 
-await scrape();
+// await scrape();
