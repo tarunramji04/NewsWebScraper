@@ -19,15 +19,21 @@ app.get('/data/:day/:source', async (req, res) => {
         const headlinesQuery = query(collectionPath);
         const results = await getDocs(headlinesQuery);
 
-        const uniques = new Set();
         const headlines = [];
 
         results.docs.forEach(doc => {
             const data = doc.data();
             const headline = data.headlineText;
+            const link = data.headlineLink;
+            const img = data.img;
 
-            if (!uniques.has(headline)) {
-                uniques.add(headline);
+            const isCompletelyUnique = !(headlines.some(item => 
+                item.headlineText === headline ||
+                item.headlineLink === link ||
+                item.img === img
+            ));
+
+            if (isCompletelyUnique) {
                 headlines.push(data);
             }
         });

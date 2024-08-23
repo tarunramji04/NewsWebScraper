@@ -1,21 +1,23 @@
 import Calendar from 'react-calendar';
 import Headline from '../Headline/Headline';
+import { fetchHeadlines } from '../../api';
 import 'react-calendar/dist/Calendar.css';
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './style.css'
 
 function CalendarView() {
     const [date, setDate] = useState(new Date());
+    const [headlinesLeftColumn, setHeadlinesLeftColumn] = useState([]);
+    const [headlinesRightColumn, setHeadlinesRightColumn] = useState([]);
 
-    const headlinesLeftColumn = [
-        { title: "Headline 1", link: "https://www.cnn.com/", imgSrc: "" },
-        { title: "Headline 2", link: "https://www.cnn.com/", imgSrc: "https://via.placeholder.com/150" },
-    ];
-    
-    const headlinesRightColumn = [
-        { title: "Headline 3", link: "https://www.cnn.com/", imgSrc: "https://via.placeholder.com/150" },
-        { title: "Headline 4", link: "https://www.cnn.com/", imgSrc: "https://via.placeholder.com/150" },
-    ];
+    useEffect(() => {
+        async function getHeadlines() {
+            const [fox, cnn] = await Promise.all([fetchHeadlines(formatDate(date), 'fox'), fetchHeadlines(formatDate(date), 'cnn')]); 
+            setHeadlinesLeftColumn(fox);
+            setHeadlinesRightColumn(cnn);
+        }
+        getHeadlines();
+    }, [date]);
 
     function formatDate(date) {
         return date.toISOString().split('T')[0];
@@ -27,12 +29,13 @@ function CalendarView() {
             <p><b>Headlines from: {formatDate(date)}</b></p>
             <div className="two-column-layout">
                 <div className="column">
+                    <h2 className="source">Fox News</h2>
                     {headlinesLeftColumn.map((headline, index) => (
                         <Headline
                             key={index} 
-                            headlineText={headline.title} 
-                            link={headline.link} 
-                            img={headline.imgSrc} 
+                            headlineText={headline.headlineText} 
+                            link={headline.headlineLink} 
+                            img={headline.img} 
                         />
                     ))}
                 </div>
@@ -40,12 +43,13 @@ function CalendarView() {
                 <div className="divider"></div>
 
                 <div className="column">
+                    <h2 className="source">CNN</h2>
                     {headlinesRightColumn.map((headline, index) => (
                         <Headline 
                             key={index} 
-                            headlineText={headline.title} 
-                            link={headline.link} 
-                            img={headline.imgSrc} 
+                            headlineText={headline.headlineText} 
+                            link={headline.headlineLink} 
+                            img={headline.img} 
                         />
                     ))}
                 </div>
